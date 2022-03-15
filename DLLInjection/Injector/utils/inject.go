@@ -39,6 +39,10 @@ func GetProc(name string) (uint32, error) {
 	}
 }
 
+/*
+Walks the loaded modules (DLLs) of target process and identifies which matches maliciously loaded DLL.
+It then calls a remote thread to execute a remote function within the mdoule by calculating its offset from the base address of the DLL. 
+*/
 func CallRemoteFunction(i *Inject) error {
 	localDllAddr, err := syscall.LoadLibrary(i.DllPath)
 	if err != nil {
@@ -93,9 +97,6 @@ func OpenProcessHandle(i *Inject) error {
 		fmt.Println("[!] ERROR :", err)
 	}
 	i.RemoteProcHandle = remoteProcHandle
-	fmt.Printf("[-] Input PID: %v\n", i.Pid)
-	fmt.Printf("[-] Input DLL: %v\n", i.DllPath)
-	fmt.Printf("[+] Process handle: %v\n", unsafe.Pointer(i.RemoteProcHandle))
 	return nil
 }
 
@@ -112,7 +113,6 @@ func VirtualAllocEx(i *Inject) error {
 		return errors.Wrap(lastErr, "[!] ERROR : Can't Allocate Memory On Remote Process.")
 	}
 	i.Lpaddr = lpBaseAddress
-	fmt.Printf("[+] Base memory address: %v\n", unsafe.Pointer(i.Lpaddr))
 	return nil
 }
 
@@ -147,8 +147,6 @@ func GetLoadLibAddress(i *Inject) error {
 		return errors.Wrap(lastErr, "[!] ERROR : Can't get process address.")
 	}
 	i.LoadLibAddr = lladdr
-	fmt.Printf("[+] Kernel32.Dll memory address: %v\n", unsafe.Pointer(kernel32dll.Handle()))
-	fmt.Printf("[+] Loader memory address: %v\n", unsafe.Pointer(i.LoadLibAddr))
 	return nil
 }
 
@@ -168,8 +166,6 @@ func CreateRemoteThread(i *Inject) error {
 		return errors.Wrap(lastErr, "[!] ERROR : Can't Create Remote Thread.")
 	}
 	i.RThread = remoteThread
-	fmt.Printf("[+] Thread identifier created: %v\n", unsafe.Pointer(&threadId))
-	fmt.Printf("[+] Thread handle created: %v\n", unsafe.Pointer(i.RThread))
 	return nil
 }
 
@@ -206,6 +202,5 @@ func VirtualFreeEx(i *Inject) error {
 	if rFreeValue == 0 {
 		return errors.Wrap(lastErr, "[!] ERROR : Error freeing process memory.")
 	}
-	fmt.Println("[+] Success: Freed memory region")
 	return nil
 }
