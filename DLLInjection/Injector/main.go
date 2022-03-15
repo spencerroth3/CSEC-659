@@ -34,9 +34,19 @@ func runMeElevated() {
 	}
 }
 
-func main() {
-	runMeElevated()
+// https://stackoverflow.com/questions/31558066/how-to-ask-for-administer-privileges-on-windows-with-go
+func amAdmin() bool {
+	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
+	if err != nil {
+		return false
+	}
+	return true
+}
 
+func main() {
+	if !amAdmin() {
+		runMeElevated()
+	}
 	//Get procID of target Process
 	procID, _ := utils.GetProc("notepad.exe")
 
