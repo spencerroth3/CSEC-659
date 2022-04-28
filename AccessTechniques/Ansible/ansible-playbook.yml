@@ -1,3 +1,30 @@
----
+--- 
 
-- name: Test Playbook
+- hosts: all
+  tasks:
+    - name: Disable all Windows Firewalls
+      ansible.windows.win_firewall:
+        state: disabled
+        profiles:
+        - Domain
+        - Private
+        - Public
+    - name: Install disabledefender-winconfig v0.0.1
+      win_chocolatey:
+        name: disabledefender-winconfig
+        state: present
+        version: 0.0.1
+        pinned: yes
+    - name: Copy DLL to Windows Host
+      ansible.windows.win_copy:
+        src: home/ubuntu/Desktop/PasswordFilter.dll
+        dest: C:\Windows\system32
+        remote_src: yes
+    - name: set LSA Registry Key to include PasswordFilter
+      ansible.windows.win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\
+        name: Notification Packages
+        data: ['scecli', 'PasswordFilter']
+        type: multistring
+    - name: reboot PC after registry update
+      reboot: 
