@@ -3,14 +3,14 @@
 - hosts: all
   tasks:
   - name: Disable all Windows Firewalls
-    ansible.windows.win_firewall:
+    community.windows.win_firewall:
       state: disabled
       profiles:
       - Domain
       - Private
       - Public
   - name: Install disabledefender-winconfig v0.0.1
-    win_chocolatey:
+    chocolatey.chocolatey.win_chocolatey:
       name: disabledefender-winconfig
       state: present
       version: 0.0.1
@@ -27,4 +27,4 @@
       data: ['scecli', 'PasswordFilter']
       type: multistring
   - name: reboot PC after registry update
-    reboot: 
+    reboot:
